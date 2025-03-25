@@ -36,7 +36,7 @@ lossFn = nn.MSELoss() # MSE - среднеквадратичная ошибка,
 
 
 # создадим оптимизатор - алгоритм, который корректирует веса наших сумматоров (нейронов)
-optimizer = torch.optim.SGD(linear.parameters(), lr=0.01) # lr - скорость обучения
+optimizer = torch.optim.SGD(linear.parameters(), lr=0.0005) # lr - скорость обучения
 
 # прямой проход (пресказание) выглядит так:
 yp = linear(x)
@@ -63,6 +63,7 @@ plt.figure
 plt.scatter(x[y==1., 0], x[y==1., 1], color='red', marker='o')
 plt.scatter(x[y==-1., 0], x[y==-1., 1], color='blue', marker='x') 
 
+y=y.view(100,1)
 # итерационно повторяем шаги
 # в цикле (фактически это и есть алгоритм обучения):
 for i in range(0,100):
@@ -78,6 +79,10 @@ for i in range(0,100):
     loss.backward()
     optimizer.step()
     
+pred = torch.Tensor(np.where(pred >=0, 1, -1).reshape(-1,1))
+err = sum(abs(y-pred))/2
+print('\nОшибка (количество несовпавших ответов): ')
+print(err)
 
 plt.text(xl[-1]-0.3, yl[-1], 'END', dict(size=14, color='red'))
 plt.show() 
